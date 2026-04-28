@@ -1,0 +1,59 @@
+cycle=
+ 1.955555555
+
+drag_gli=
+ 0.009018558
+
+cn=
+ 1.077492593
+
+ct=
+ 0.036
+
+ca=
+ 0.650845054
+
+time_step=
+ 72
+
+cycle_num=
+ 5
+
+divl=
+ 10
+
+divr=
+ 10
+
+divt=
+ 36
+
+inipos=
+ 0.0  0.0  0.0
+
+inidirec=
+ -1.0  0.0  0.0
+ 0.0  -1.0  0.0
+ 0.0  0.0  1.0
+
+inivel=
+ 0.0  0.0  0.0
+
+iniavel=
+ 0.0  0.0  0.0
+
+direcd=
+ 54.865
+
+flagoutr=
+ 2
+
+flagoutf=
+ 1
+
+flagoutj=
+ 1
+
+flagouta=
+ 2
+
