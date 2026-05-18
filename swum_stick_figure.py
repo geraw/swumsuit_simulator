@@ -180,6 +180,12 @@ def parse_args() -> argparse.Namespace:
         help="Stick figure line width.",
     )
     parser.add_argument(
+        "--point-size",
+        type=float,
+        default=32.0,
+        help="Size of the purple joint/endpoint markers.",
+    )
+    parser.add_argument(
         "--no-show",
         action="store_true",
         help="Do not open an interactive window.",
@@ -482,6 +488,35 @@ def frame_lines(roots: np.ndarray, tips: np.ndarray) -> list[np.ndarray]:
     return lines
 
 
+MARKER_POINTS = [
+    ("root", 1),
+    ("tip", 3),
+    ("tip", 6),
+    ("tip", 7),
+    ("root", 10),
+    ("tip", 10),
+    ("tip", 12),
+    ("tip", 14),
+    ("root", 11),
+    ("tip", 11),
+    ("tip", 13),
+    ("tip", 15),
+    ("root", 16),
+    ("tip", 16),
+    ("tip", 20),
+    ("root", 17),
+    ("tip", 17),
+    ("tip", 21),
+]
+
+
+def frame_points(roots: np.ndarray, tips: np.ndarray) -> np.ndarray:
+    points = []
+    for point_kind, segment_no in MARKER_POINTS:
+        points.append(roots[segment_no] if point_kind == "root" else tips[segment_no])
+    return np.vstack(points)
+
+
 def bounds_for_frames(frames: Sequence[tuple[np.ndarray, np.ndarray]]) -> tuple[np.ndarray, float]:
     all_points = []
     for roots, tips in frames:
@@ -561,6 +596,18 @@ def plot_animation(
         )
         artists.append(artist)
 
+    first_points = frame_points(*frames[0])
+    point_artist = axis.scatter(
+        first_points[:, 0],
+        first_points[:, 1],
+        first_points[:, 2],
+        s=args.point_size,
+        c="#9b2bbf",
+        edgecolors="white",
+        linewidths=0.7,
+        depthshade=True,
+        zorder=5,
+    )
     title = axis.set_title("")
 
     def update(frame_position: int) -> Iterable[object]:
@@ -569,9 +616,12 @@ def plot_animation(
             artist.set_data(line[:, 0], line[:, 1])
             artist.set_3d_properties(line[:, 2])
 
+        points = frame_points(*frames[frame_position])
+        point_artist._offsets3d = (points[:, 0], points[:, 1], points[:, 2])
+
         source_frame = frame_indices[frame_position] + 1
         title.set_text(f"SWUM joint motion frame {source_frame}/{motion.num_frames}")
-        return [*artists, title]
+        return [*artists, point_artist, title]
 
     update(0)
 
